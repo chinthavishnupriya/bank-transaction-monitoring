@@ -4,7 +4,7 @@ A Scala and Apache Spark mini-project for monitoring bank transactions and ident
 
 ## 🌐 Live Dashboard
 
-The Bank Transaction Monitoring Dashboard is deployed using GitHub Pages.
+The monitoring dashboard is deployed using GitHub Pages.
 
 👉 **[Open Live Dashboard](https://chinthavishnupriya.github.io/bank-transaction-monitoring/)**
 
@@ -21,9 +21,7 @@ The dashboard displays:
 
 ## 1. Project Overview
 
-This project implements a bank transaction monitoring pipeline using Scala and Apache Spark.
-
-The system processes transaction records and identifies potentially unusual activity using three main monitoring rules:
+This project implements a bank transaction monitoring pipeline using Scala and Apache Spark. The system processes transaction records and identifies potentially unusual activity using three monitoring rules:
 
 1. High transaction frequency for an account
 2. High transaction amount
@@ -31,58 +29,22 @@ The system processes transaction records and identifies potentially unusual acti
 
 The project demonstrates both batch and streaming-oriented Spark processing.
 
-The implementation covers:
+## 2. Objectives
 
-- Scala
-- Apache Spark
-- RDDs
-- Pair RDDs
-- Stateful processing
-- Sliding window processing
-- Broadcast variables
-- Accumulators
-- Cache/persist
-- DataFrames
-- Aggregations
-- Partition management
-- Repartition and coalesce
-- DAG and stage concepts
-- Shuffle concepts
-- RDD lineage and fault tolerance
-
----
-
-## 2. Problem Statement
-
-Process account transactions and identify unusual transaction frequency, amount, and geographic patterns.
-
-The project is based on Project 11 — Bank Transaction Monitoring from the Scala + Apache Spark real-time case-study mini-project set.
-
----
-
-## 3. Objectives
-
-The main objectives are:
-
-- Read transaction data from CSV files.
-- Validate and parse transaction records.
+- Read and validate transaction records from CSV files.
 - Count transactions for each account.
-- Detect accounts with unusually high transaction frequency.
+- Detect unusually high transaction frequency.
 - Detect high-value transactions.
-- Count transactions by geographic location.
 - Detect locations with unusually high transaction activity.
-- Demonstrate stateful streaming processing.
+- Demonstrate stateful streaming with `updateStateByKey`.
 - Demonstrate sliding-window processing.
-- Demonstrate Spark partition management.
 - Use broadcast variables for monitoring thresholds.
-- Use an accumulator for malformed transaction records.
-- Use DataFrames for analytical aggregations.
-- Demonstrate cache/persist for repeated computation.
-- Explain Spark execution concepts such as DAG, stages, shuffle, and lineage.
+- Use an accumulator for malformed records.
+- Demonstrate caching and partition management.
+- Perform DataFrame analytical aggregations.
+- Explain DAG, stages, shuffle, lineage, and fault tolerance.
 
----
-
-## 4. Technology Stack
+## 3. Technology Stack
 
 | Technology | Version |
 |---|---|
@@ -95,21 +57,14 @@ The main objectives are:
 | Spark Streaming | 3.5.6 |
 | Execution Mode | Local |
 
-The implementation uses Scala 2.12 and Apache Spark 3.5.6.
-
----
-
-## 5. Project Structure
+## 4. Project Structure
 
 ```text
 bank-transaction-monitoring/
-│
 ├── build.sbt
 ├── .gitignore
-│
 ├── project/
 │   └── build.properties
-│
 ├── src/
 │   └── main/
 │       └── scala/
@@ -118,23 +73,25 @@ bank-transaction-monitoring/
 │           ├── StreamingProcessor.scala
 │           ├── WindowProcessor.scala
 │           └── FinalMonitoringProcessor.scala
-│
-└── data/
-    ├── input/
-    │   ├── transactions.csv
-    │   ├── stream/
-    │   └── window/
-    │
-    ├── reference/
-    │
-    └── output/
+├── data/
+│   ├── input/
+│   │   ├── transactions.csv
+│   │   ├── stream/
+│   │   └── window/
+│   ├── reference/
+│   └── output/
+├── docs/
+│   ├── index.html
+│   └── dashboard-preview.png
+├── outputs/
+│   ├── batch-output.txt
+│   ├── spark-submit-output.txt
+│   ├── streaming-output.txt
+│   └── window-output.txt
+└── README.md
 ```
 
----
-
-## 6. Transaction Schema
-
-The input CSV contains the following fields:
+## 5. Transaction Schema
 
 | Field | Type | Description |
 |---|---|---|
@@ -155,11 +112,7 @@ TXN002,ACC001,CUST001,WITHDRAWAL,5000,2026-09-03T09:15:00,Hyderabad
 TXN003,ACC002,CUST002,TRANSFER,2500,2026-09-03T09:20:00,Chennai
 ```
 
----
-
-## 7. Monitoring Thresholds
-
-The final monitoring processor uses broadcast thresholds:
+## 6. Monitoring Thresholds
 
 | Rule | Threshold |
 |---|---:|
@@ -167,19 +120,15 @@ The final monitoring processor uses broadcast thresholds:
 | High transaction amount | 50000 |
 | Geographic transaction frequency | 3 |
 
-The monitoring logic identifies values that **exceed** the configured threshold.
+The monitoring logic reports values that **exceed** the configured threshold. Therefore, a frequency of exactly 3 is not reported; a frequency greater than 3 is reported.
 
-Therefore, with a frequency threshold of 3, an account or location must have more than 3 transactions to be reported as high frequency.
+## 7. Sample Dataset
 
----
+The sample dataset contains **20 valid transactions**.
 
-## 8. Sample Dataset
+### Account Counts
 
-The project contains 20 valid transaction records.
-
-Important account counts:
-
-| Account | Transaction Count |
+| Account | Transactions |
 |---|---:|
 | ACC001 | 6 |
 | ACC002 | 3 |
@@ -192,9 +141,9 @@ Important account counts:
 | ACC009 | 1 |
 | ACC010 | 1 |
 
-Important location counts:
+### Location Counts
 
-| Location | Transaction Count |
+| Location | Transactions |
 |---|---:|
 | Hyderabad | 7 |
 | Chennai | 3 |
@@ -204,9 +153,7 @@ Important location counts:
 | Kolkata | 1 |
 | Pune | 1 |
 
----
-
-## 9. Data Model
+## 8. Data Model
 
 `Models.scala` defines the transaction model:
 
@@ -222,83 +169,55 @@ case class BankTransaction(
 )
 ```
 
-The case class provides a structured representation of every transaction.
+## 9. Batch Processing
 
----
-
-## 10. Batch Processing
-
-`BatchProcessor.scala` implements the main batch-processing workflow.
-
-The batch pipeline performs the following operations:
+`BatchProcessor.scala` implements the main batch workflow:
 
 1. Create a `SparkSession`.
-2. Read the CSV input file.
+2. Read the CSV file.
 3. Skip the header.
-4. Parse and validate transaction records.
+4. Parse and validate records.
 5. Count malformed records using an accumulator.
 6. Cache the parsed transaction RDD.
 7. Create a Pair RDD using `(accountId, 1)`.
 8. Use `reduceByKey` to count transactions per account.
 9. Broadcast monitoring thresholds.
-10. Identify high-frequency accounts.
-11. Identify high-value transactions.
+10. Detect high-frequency accounts.
+11. Detect high-value transactions.
 12. Count transactions by location.
-13. Identify high-frequency locations.
+13. Detect high-frequency locations.
 14. Demonstrate `repartition` and `coalesce`.
-15. Convert transaction data to a DataFrame.
+15. Convert transactions to a DataFrame.
 16. Perform analytical aggregations.
-17. Release cached data and broadcast variables.
-18. Stop the Spark session.
+17. Release cached and broadcast resources.
+18. Stop Spark.
 
----
-
-## 11. Pair RDD Processing
-
-The project demonstrates Pair RDD operations for account-level monitoring.
-
-Example transformation:
+## 10. Pair RDD Processing
 
 ```scala
 val accountPairs = transactions.map(tx => (tx.accountId, 1))
-```
-
-The counts are calculated using:
-
-```scala
 val accountCounts = accountPairs.reduceByKey(_ + _)
 ```
 
-`reduceByKey` is a key-based aggregation and requires data movement across partitions when matching keys are located in different partitions.
+`reduceByKey` performs key-based aggregation and can require a shuffle when matching keys are distributed across partitions.
 
----
+## 11. High-Frequency Account Monitoring
 
-## 12. High-Frequency Account Monitoring
+With a frequency threshold of 3 and an exceeds-threshold rule:
 
-The account transaction count is compared against the broadcast frequency threshold.
+```text
+ACC001 -> 6 transactions
+```
 
-For the sample data:
-
-- ACC001 has 6 transactions.
-- ACC002 has 3 transactions.
-- ACC003 has 3 transactions.
-- The configured threshold is 3.
-
-Because the rule reports accounts that exceed the threshold, only ACC001 is classified as a high-frequency account.
-
-Final result:
+Therefore:
 
 ```text
 High-frequency accounts: 1
 ```
 
----
+## 12. High-Amount Transaction Monitoring
 
-## 13. High-Amount Transaction Monitoring
-
-The high-amount rule compares each transaction amount against the broadcast amount threshold of 50,000.
-
-The following four transactions exceed the threshold:
+The following transactions exceed ₹50,000:
 
 | Transaction | Account | Amount | Location |
 |---|---|---:|---|
@@ -307,72 +226,53 @@ The following four transactions exceed the threshold:
 | TXN014 | ACC007 | 90000 | Delhi |
 | TXN015 | ACC008 | 120000 | Kolkata |
 
-Final result:
+Result:
 
 ```text
 High-amount transactions: 4
 ```
 
----
+## 13. Geographic Monitoring
 
-## 14. Geographic Monitoring
+With a geographic threshold of 3, only Hyderabad exceeds the threshold:
 
-Transactions are grouped by location to identify locations with unusually high transaction activity.
+```text
+Hyderabad -> 7 transactions
+```
 
-For the sample data:
-
-- Hyderabad = 7
-- Chennai = 3
-- Bangalore = 3
-- Mumbai = 3
-- Delhi = 2
-- Kolkata = 1
-- Pune = 1
-
-With a geographic threshold of 3 and an exceeds-threshold rule, Hyderabad is the only high-frequency location.
-
-Final result:
+Result:
 
 ```text
 High-frequency locations: 1
 ```
 
----
+## 14. Stateful Streaming Processing
 
-## 15. Stateful Streaming Processing
+`StreamingProcessor.scala` demonstrates stateful Spark Streaming using `updateStateByKey`.
 
-`StreamingProcessor.scala` demonstrates stateful processing using Spark Streaming and `updateStateByKey`.
+The processor:
 
-The streaming processor:
-
-- Watches the `data/input/stream` directory.
+- Watches `data/input/stream`.
 - Processes newly arriving files as micro-batches.
 - Maintains cumulative account transaction counts.
 - Uses checkpointing for state recovery.
 
-The state update logic maintains the previous account count and adds new transaction counts.
-
-Example observed behavior:
+Observed state includes:
 
 ```text
-First batch:
-ACC001 -> 6
-ACC002 -> 3
-
-After the second batch:
-ACC001 -> 8
-ACC002 -> 4
+ACC001 -> 6 transactions
+ACC002 -> 3 transactions
+ACC003 -> 3 transactions
+ACC004 -> 2 transactions
+...
+ACC010 -> 1 transactions
 ```
 
-This demonstrates that state is maintained across micro-batches instead of being calculated only from the current batch.
+This demonstrates that account state is maintained across streaming micro-batches.
 
----
+## 15. Sliding Window Processing
 
-## 16. Sliding Window Processing
-
-`WindowProcessor.scala` demonstrates Spark Streaming window operations.
-
-The project uses:
+`WindowProcessor.scala` uses:
 
 ```scala
 window(
@@ -381,22 +281,16 @@ window(
 )
 ```
 
-This means:
+Therefore:
 
 - Window duration = 15 seconds
 - Sliding interval = 5 seconds
 
-The window continuously considers the most recent 15 seconds of streaming data and updates the result every 5 seconds.
+The processor continuously evaluates the most recent 15 seconds of streaming data and updates the result every 5 seconds.
 
-Observed sample behavior included changing account counts between successive windows, demonstrating that transactions enter and leave the active window as time advances.
+## 16. Broadcast Variables
 
----
-
-## 17. Broadcast Variables
-
-Broadcast variables are used to distribute monitoring thresholds efficiently to Spark executors.
-
-The project broadcasts:
+The project broadcasts these small, read-only monitoring thresholds:
 
 ```text
 Frequency threshold = 3
@@ -404,76 +298,54 @@ Amount threshold = 50000
 Geographic threshold = 3
 ```
 
-Broadcasting avoids repeatedly shipping the same small read-only configuration with every task.
+This avoids repeatedly shipping the same configuration with individual tasks.
 
-The final processor also ensures that all required computations using the broadcasts are completed before destroying them.
+## 17. Accumulator
 
----
+The `malformedTransactions` accumulator counts transaction records that cannot be parsed correctly.
 
-## 18. Accumulator
-
-An accumulator named `malformedTransactions` is used to count records that cannot be parsed correctly.
-
-For the sample dataset:
+For the sample data:
 
 ```text
 Valid transactions: 20
 Malformed transactions: 0
 ```
 
-Accumulators are useful for counters and metrics that are updated by tasks and observed by the driver.
+## 18. Cache and Persist
 
----
-
-## 19. Cache and Persist
-
-The parsed transaction RDD is reused by several operations, so caching is demonstrated.
-
-Typical usage is:
+The parsed transaction RDD is reused by several operations, so caching is demonstrated:
 
 ```scala
 transactions.cache()
 ```
 
-After the required computations are complete, the cached RDD is released.
+The cached RDD is released after the required computations are complete.
 
-Caching is useful when the same RDD is used repeatedly and recomputing it would otherwise increase execution cost.
-
----
-
-## 20. Narrow and Wide Transformations
+## 19. Narrow and Wide Transformations
 
 ### Narrow Transformations
 
-A narrow transformation does not require data to be shuffled between partitions.
-
-Examples used or demonstrated in the project include:
+Examples include:
 
 - `map`
 - `filter`
 - `mapValues`
 
-Each output partition can be computed from a small number of corresponding input partitions.
+These do not require a full shuffle between partitions.
 
 ### Wide Transformations
 
-A wide transformation requires data movement between partitions and can create a shuffle boundary.
-
-Examples in this project include:
+Examples include:
 
 - `reduceByKey`
 - `groupByKey`
 - `repartition`
 
-These operations can cause records with the same key or required partitioning relationship to be moved across the cluster.
+These can require data movement between partitions and create shuffle boundaries.
 
----
+## 20. DAG and Stages
 
-## 21. DAG
-
-Spark builds a Directed Acyclic Graph (DAG) of transformations before executing an action.
-
-A simplified flow for this project is:
+A simplified execution flow is:
 
 ```text
 Input CSV
@@ -491,32 +363,16 @@ Pair RDD             DataFrame
    |                    |
    v                    v
 reduceByKey         groupBy / agg
-   |
-   v
-Account Alerts
+   |                    |
+   v                    v
+Account Alerts      Analytics
 ```
 
-The DAG allows Spark to optimize execution before running tasks.
+Spark divides jobs into stages around shuffle boundaries. The exact number of stages depends on the action and execution plan.
 
----
+## 21. Shuffle
 
-## 22. Spark Stages
-
-Spark divides a job into stages around shuffle boundaries.
-
-For example, operations such as `map` and `filter` can remain in the same stage when no shuffle is required. A key-based aggregation such as `reduceByKey` introduces a shuffle boundary and can therefore result in additional stages.
-
-The exact number of stages can vary depending on the action and execution plan.
-
----
-
-## 23. Shuffle
-
-A shuffle occurs when Spark must redistribute data across partitions.
-
-In this project, key-based account aggregation using `reduceByKey` is a major example.
-
-Conceptually:
+A shuffle redistributes data between partitions. In this project, account aggregation using `reduceByKey` is a major example.
 
 ```text
 Partition 1 ----\
@@ -524,13 +380,11 @@ Partition 2 ----- > Shuffle by accountId ---> Aggregated partitions
 Partition 3 ----/
 ```
 
-Shuffle operations can be expensive because they involve network and serialization overhead.
+Shuffle can introduce network and serialization overhead.
 
----
+## 22. Partition Management
 
-## 24. Partition Management
-
-The project demonstrates partition management using:
+The project demonstrates:
 
 ```scala
 repartition(4)
@@ -542,7 +396,7 @@ followed by:
 coalesce(2)
 ```
 
-The observed partition sequence is:
+Observed sequence:
 
 ```text
 Initial partitions : 2
@@ -550,33 +404,26 @@ After repartition  : 4
 After coalesce     : 2
 ```
 
-### Repartition vs Coalesce
-
 | Operation | Typical Purpose | Shuffle |
 |---|---|---|
 | `repartition(n)` | Increase or decrease partitions | Yes |
 | `coalesce(n)` | Usually reduce partitions | Usually avoids a full shuffle |
 
-`repartition` is useful when a more even redistribution is required. `coalesce` is useful when reducing partitions without requiring a complete redistribution.
+## 23. DataFrame Aggregations
 
----
-
-## 25. DataFrame Aggregations
-
-The final monitoring processor converts transaction data into a DataFrame and performs analytical aggregations.
-
-The project calculates:
+The final processor converts transactions to a DataFrame and calculates:
 
 - Transaction count by account
-- Total transaction amount by account
-- Average transaction amount by account
-- Transaction count by transaction type
-- Total transaction amount by transaction type
-- Average transaction amount by transaction type
+- Total amount by account
+- Average amount by account
+- Maximum and minimum amount by account
+- Transaction count by type
+- Total amount by type
+- Average amount by type
 - Transaction count by location
-- Total transaction amount by location
+- Total amount by location
 
-Example account statistics:
+Example:
 
 | Account | Count | Total Amount | Average Amount |
 |---|---:|---:|---:|
@@ -585,11 +432,7 @@ Example account statistics:
 | ACC003 | 3 | 80500 | 26833.33 |
 | ACC004 | 2 | 85000 | 42500.00 |
 
----
-
-## 26. Transaction-Type Analysis
-
-The final pipeline produces the following transaction-type statistics:
+## 24. Transaction-Type Analysis
 
 | Type | Count | Total Amount | Average Amount |
 |---|---:|---:|---:|
@@ -597,11 +440,7 @@ The final pipeline produces the following transaction-type statistics:
 | TRANSFER | 10 | 277000 | 27700.00 |
 | WITHDRAWAL | 7 | 139500 | 19928.57 |
 
----
-
-## 27. Location Analysis
-
-The final pipeline produces the following location statistics:
+## 25. Location Analysis
 
 | Location | Count | Total Amount |
 |---|---:|---:|
@@ -613,38 +452,26 @@ The final pipeline produces the following location statistics:
 | Mumbai | 3 | 110000 |
 | Pune | 1 | 8000 |
 
----
+## 26. Spark SQL, Joins, Windows and UDFs
 
-## 28. Spark SQL, Joins, Windows and UDFs
-
-The current transaction schema does not require a reference-table join or custom UDF for the implemented monitoring rules.
-
-The project demonstrates DataFrame aggregations directly. The same architecture can be extended with:
+The implemented monitoring rules use DataFrame aggregations directly. The architecture can be extended with:
 
 - Spark SQL queries
 - Reference-table joins
 - Window functions for time-based account analysis
 - UDFs for custom transaction classification
 
-These features are useful extensions when the monitoring system is expanded with customer profiles, account metadata, risk categories, or more advanced fraud rules.
+These are useful extensions for customer profiles, account metadata, risk categories, and advanced monitoring rules.
 
----
+## 27. Fault Tolerance and RDD Lineage
 
-## 29. Fault Tolerance and RDD Lineage
+Spark maintains lineage information for RDD transformations. If a partition is lost, Spark can recompute the required data from lineage rather than requiring the complete dataset to be stored redundantly in memory.
 
-Spark maintains lineage information for RDD transformations.
+The stateful streaming processor also uses checkpointing to support recovery of maintained streaming state.
 
-If a partition is lost, Spark can recompute the required data from the lineage rather than requiring the entire dataset to be stored redundantly in memory.
+## 28. YARN Deployment Concept
 
-The project also demonstrates checkpointing in the stateful streaming processor because maintained streaming state requires recovery support.
-
----
-
-## 30. YARN Deployment Concept
-
-The project is executed locally for development and demonstration, but the application can conceptually be deployed to a Hadoop YARN cluster.
-
-After creating the application JAR with sbt, a deployment could follow this pattern:
+The project was validated locally, but the application can conceptually be submitted to a YARN cluster:
 
 ```bash
 spark-submit \
@@ -653,11 +480,7 @@ spark-submit \
   bank-transaction-monitoring.jar
 ```
 
-The current implementation was validated in local Spark mode.
-
----
-
-## 31. Running the Project
+## 29. Running the Project
 
 ### Compile and Package
 
@@ -666,33 +489,31 @@ sbt clean
 sbt package
 ```
 
-### Run Batch Processor
+### Batch Processor
 
 ```bash
 sbt "runMain BatchProcessor"
 ```
 
-### Run Final Monitoring Processor
+### Final Monitoring Processor
 
 ```bash
 sbt "runMain FinalMonitoringProcessor"
 ```
 
-### Run Streaming Processor
+### Stateful Streaming Processor
 
 ```bash
 sbt "runMain StreamingProcessor"
 ```
 
-### Run Window Processor
+### Window Processor
 
 ```bash
 sbt "runMain WindowProcessor"
 ```
 
 ### Spark Submit
-
-The packaged application was successfully executed with:
 
 ```bash
 spark-submit \
@@ -702,15 +523,11 @@ spark-submit \
   bank-transaction-monitoring.jar
 ```
 
-The `spark.hadoop.fs.defaultFS=file:///` setting ensures that the local project input is treated as a local filesystem path in the tested environment.
+The `spark.hadoop.fs.defaultFS=file:///` setting was required in the tested local environment so project input paths resolve through the local filesystem.
 
----
+## 30. Java 17 Spark Configuration
 
-## 32. Java 17 Spark Configuration
-
-The project uses Java 17 with Spark 3.5.6.
-
-For the tested local environment, Spark execution used the following Java module-opening options:
+For the tested Java 17 environment, Spark execution used:
 
 ```bash
 export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED \
@@ -720,11 +537,9 @@ export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED \
 --add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
 ```
 
----
+## 31. Actual Execution Results
 
-## 33. Actual Execution Output
-
-The final monitoring pipeline was successfully executed with the following results:
+The final Spark-submit execution completed successfully with:
 
 ```text
 Monitoring thresholds:
@@ -748,18 +563,45 @@ TXN015 | ACC008 | ₹120000 | Kolkata
 High-frequency location:
 ALERT -> Hyderabad has 7 transactions
 
+Partitions:
+Original: 2
+After repartition(4): 4
+After coalesce(2): 2
+
 Summary:
-Valid 20
-Malformed 0
-High-frequency accounts 1
-High-amount transactions 4
-High-frequency locations 1
+Valid transactions: 20
+Malformed transactions: 0
+High-frequency accounts: 1
+High-amount transactions: 4
+High-frequency locations: 1
 Final monitoring pipeline completed.
 ```
 
----
+## 32. Ubuntu Execution Evidence
 
-## 34. Architecture
+The repository includes the actual terminal outputs captured during Ubuntu/WSL execution. These files provide reproducible execution evidence for the main project components.
+
+| Component | Output |
+|---|---|
+| Batch processing | [View `batch-output.txt`](outputs/batch-output.txt) |
+| Final Spark submit | [View `spark-submit-output.txt`](outputs/spark-submit-output.txt) |
+| Stateful streaming | [View `streaming-output.txt`](outputs/streaming-output.txt) |
+| Sliding window | [View `window-output.txt`](outputs/window-output.txt) |
+
+### Verified execution evidence
+
+- Spark 3.5.6 executed successfully.
+- Java 17 executed successfully.
+- Batch processing processed 20 valid transactions.
+- Malformed transaction count was 0.
+- One high-frequency account was detected: ACC001.
+- Four high-amount transactions were detected.
+- One high-frequency location was detected: Hyderabad.
+- Stateful streaming maintained account counts.
+- Sliding-window processing ran with a 15-second window and 5-second slide.
+- Partition management demonstrated `2 → 4 → 2`.
+
+## 33. Architecture
 
 ```text
                 +----------------------+
@@ -802,9 +644,7 @@ Final monitoring pipeline completed.
                 +----------------------+
 ```
 
----
-
-## 35. Learning Outcomes
+## 34. Learning Outcomes
 
 This project demonstrates practical knowledge of:
 
@@ -826,39 +666,33 @@ This project demonstrates practical knowledge of:
 - Fault tolerance
 - Spark deployment concepts
 - Git and GitHub project management
-- Static dashboard deployment using GitHub Pages
+- GitHub Pages dashboard deployment
 
----
-
-## 36. Project Checklist
+## 35. Project Checklist
 
 | Requirement | Status |
 |---|---|
 | Scala implementation | ✅ |
 | Spark RDD processing | ✅ |
-| Pair RDD | ✅ |
-| Stateful processing | ✅ |
-| Sliding window | ✅ |
-| Broadcast variable | ✅ |
+| Pair RDD operations | ✅ |
+| Account frequency monitoring | ✅ |
+| Amount monitoring | ✅ |
+| Geographic monitoring | ✅ |
+| Stateful streaming | ✅ |
+| Sliding windows | ✅ |
+| Broadcast variables | ✅ |
 | Accumulator | ✅ |
 | Cache/persist | ✅ |
-| DataFrame aggregation | ✅ |
-| Narrow transformations | ✅ |
-| Wide transformations | ✅ |
-| DAG explanation | ✅ |
-| Stage explanation | ✅ |
-| Shuffle explanation | ✅ |
+| DataFrame aggregations | ✅ |
 | Partition management | ✅ |
-| Repartition/coalesce | ✅ |
-| Fault tolerance/lineage | ✅ |
-| YARN deployment concept | ✅ |
-| Packaged JAR | ✅ |
-| Spark-submit execution | ✅ |
-| Public dashboard | ✅ |
+| Repartition vs coalesce | ✅ |
+| DAG/stage/shuffle explanation | ✅ |
+| RDD lineage/fault tolerance | ✅ |
+| Ubuntu execution evidence | ✅ |
+| Live dashboard | ✅ |
+| GitHub Pages deployment | ✅ |
 
----
-
-## 37. Author
+## 36. Author
 
 **Chintha Vishnupriya**
 
