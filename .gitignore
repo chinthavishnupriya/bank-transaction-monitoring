@@ -8,3 +8,4 @@ metastore_db/
 derby.log
 data/checkpoint/
 .bsp/
+data/input/window/
