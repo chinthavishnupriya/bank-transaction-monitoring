@@ -24,5 +24,11 @@ jobs:
       - name: Set up sbt
         uses: sbt/setup-sbt@v1
 
-      - name: Compile and package
-        run: sbt clean compile package
+      - name: Clean
+        run: sbt clean
+
+      - name: Compile
+        run: sbt compile
+
+      - name: Package
+        run: sbt package
