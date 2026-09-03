@@ -2,6 +2,21 @@
 
 A Scala and Apache Spark mini-project for monitoring bank transactions and identifying unusual transaction frequency, high-value transactions, and unusual geographic activity.
 
+## 🌐 Live Dashboard
+
+The Bank Transaction Monitoring Dashboard is deployed using GitHub Pages.
+
+👉 **[Open Live Dashboard](https://chinthavishnupriya.github.io/bank-transaction-monitoring/)**
+
+The dashboard displays:
+- Valid and malformed transaction counts
+- High-frequency account alerts
+- High-amount transaction alerts
+- Geographic transaction monitoring
+- Account-level statistics
+- Transaction-type statistics
+- Spark partition information
+
 ## 1. Project Overview
 
 This project implements a bank transaction monitoring pipeline using Scala and Apache Spark.
@@ -630,31 +645,23 @@ The project is executed locally for development and demonstration, but the appli
 After creating the application JAR with sbt, a deployment could follow this pattern:
 
 ```bash
-sbt package
-
 spark-submit \
   --master yarn \
-  --deploy-mode cluster \
   --class FinalMonitoringProcessor \
-  target/scala-2.12/bank-transaction-monitoring_2.12-1.0.jar
+  bank-transaction-monitoring.jar
 ```
 
-The exact YARN configuration depends on the target cluster environment.
+The current implementation was validated in local Spark mode.
 
 ---
 
 ## 31. Running the Project
 
-Navigate to the project directory:
+### Compile and Package
 
 ```bash
-cd ~/bank-transaction-monitoring
-```
-
-### Compile
-
-```bash
-sbt compile
+sbt clean
+sbt package
 ```
 
 ### Run Batch Processor
@@ -663,167 +670,189 @@ sbt compile
 sbt "runMain BatchProcessor"
 ```
 
-### Run Stateful Streaming Processor
-
-```bash
-sbt "runMain StreamingProcessor"
-```
-
-### Run Sliding Window Processor
-
-```bash
-sbt "runMain WindowProcessor"
-```
-
 ### Run Final Monitoring Processor
 
 ```bash
 sbt "runMain FinalMonitoringProcessor"
 ```
 
-### Build JAR
+### Run Streaming Processor
 
 ```bash
-sbt package
+sbt "runMain StreamingProcessor"
+```
+
+### Run Window Processor
+
+```bash
+sbt "runMain WindowProcessor"
+```
+
+### Spark Submit
+
+The packaged application was successfully executed with:
+
+```bash
+spark-submit \
+  --conf spark.hadoop.fs.defaultFS=file:/// \
+  --class FinalMonitoringProcessor \
+  --master local[*] \
+  bank-transaction-monitoring.jar
+```
+
+The `spark.hadoop.fs.defaultFS=file:///` setting ensures that the local project input is treated as a local filesystem path in the tested environment.
+
+---
+
+## 32. Java 17 Spark Configuration
+
+The project uses Java 17 with Spark 3.5.6.
+
+For the tested local environment, Spark execution used the following Java module-opening options:
+
+```bash
+export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED \
+--add-opens=java.base/java.lang.invoke=ALL-UNNAMED \
+--add-opens=java.base/java.nio=ALL-UNNAMED \
+--add-opens=java.base/java.util=ALL-UNNAMED \
+--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
 ```
 
 ---
 
-## 32. Java 17 Runtime Configuration
+## 33. Actual Execution Output
 
-When running Spark 3.5.6 with Java 17 in the local development environment, the following JVM module-opening options are used to avoid Java module-access issues:
-
-```bash
-export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
-```
-
-If the environment is newly opened, set the variable before running Spark applications.
-
-The WSL hostname/loopback warning and native Hadoop library warning observed during local execution are non-blocking for this project.
-
----
-
-## 33. Final Pipeline Output
-
-The final monitoring processor successfully produced:
+The final monitoring pipeline was successfully executed with the following results:
 
 ```text
-Valid transactions: 20
+Monitoring thresholds:
+Frequency: > 3
+Amount: > ₹50000.00
+Location: > 3
+
+Input summary:
+Total valid transactions: 20
 Malformed transactions: 0
-High-frequency accounts: 1
-High-amount transactions: 4
-High-frequency locations: 1
+
+High-frequency account alerts:
+ALERT -> ACC001 has 6 transactions
+
+High amount alerts:
+TXN005 | ACC004 | ₹75000 | Mumbai
+TXN009 | ACC003 | ₹60000 | Bangalore
+TXN014 | ACC007 | ₹90000 | Delhi
+TXN015 | ACC008 | ₹120000 | Kolkata
+
+High-frequency location:
+ALERT -> Hyderabad has 7 transactions
+
+Summary:
+Valid 20
+Malformed 0
+High-frequency accounts 1
+High-amount transactions 4
+High-frequency locations 1
 Final monitoring pipeline completed.
 ```
 
-The final pipeline also prints account statistics, transaction-type statistics, location statistics, and partition counts.
-
 ---
 
-## 34. Overall Architecture
+## 34. Architecture
 
 ```text
-                    Bank Transaction CSV
-                            |
-                            v
-                   Parse and Validation
-                            |
-                            v
-                    BankTransaction RDD
-                            |
-              +-------------+-------------+
-              |                           |
-              v                           v
-        Pair RDD Analysis           DataFrame Analysis
-              |                           |
-       +------+------+             +------+------+ 
-       |      |      |             |      |      |
-       v      v      v             v      v      v
-    Account Amount Location       Account Type Location
-    Counts   Alerts Alerts        Stats  Stats  Stats
-       |      |      |             |      |      |
-       +------+------+-------------+------+------+
-                            |
-                            v
-                   Monitoring Results
-                            |
-                            v
-                  High-Risk Indicators
-```
-
-Streaming components operate separately for event-driven demonstrations:
-
-```text
-Incoming Files
-      |
-      v
-Spark Streaming
-      |
-      +----------------------+
-      |                      |
-      v                      v
-Stateful Updates       Sliding Windows
-      |                      |
-      +----------+-----------+
-                 |
-                 v
-          Monitoring Results
+                +----------------------+
+                | transactions.csv     |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                | CSV Parsing/Validate |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                | Spark Transaction RDD|
+                +----------+-----------+
+                           |
+              +------------+------------+
+              |            |            |
+              v            v            v
+        Account RDD   Amount Rules   Location RDD
+              |            |            |
+              v            v            v
+        Frequency       Alerts       Geo Alerts
+              |            |            |
+              +------------+------------+
+                           |
+                           v
+                +----------------------+
+                | DataFrame Analytics  |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                | Monitoring Results   |
+                +----------+-----------+
+                           |
+                           v
+                +----------------------+
+                | GitHub Pages Dashboard|
+                +----------------------+
 ```
 
 ---
 
 ## 35. Learning Outcomes
 
-This project provides practical experience with:
+This project demonstrates practical knowledge of:
 
-- Scala case classes
-- Spark RDD programming
-- Pair RDD operations
-- Key-based aggregation
-- Stateful Spark Streaming
-- Sliding windows
+- Scala programming
+- Apache Spark fundamentals
+- RDD processing
+- Pair RDDs
+- Stateful streaming
+- Window operations
 - Broadcast variables
 - Accumulators
-- Cache and persist
-- DataFrame APIs
-- Aggregation functions
+- Caching
+- DataFrames and aggregations
 - Partition management
-- Shuffle behavior
+- Narrow and wide transformations
 - DAG and stage concepts
+- Shuffle behavior
 - RDD lineage
-- Fault tolerance concepts
-- Local Spark execution
-- sbt project management
+- Fault tolerance
+- Spark deployment concepts
 - Git and GitHub project management
+- Static dashboard deployment using GitHub Pages
 
 ---
 
-## 36. Project Status
+## 36. Project Checklist
 
-The Bank Transaction Monitoring project is implemented and tested in the local Spark environment.
-
-Completed components:
-
-- [x] Scala project setup
-- [x] Spark dependencies
-- [x] Transaction data model
-- [x] Sample transaction dataset
-- [x] Batch processing
-- [x] Pair RDD account counting
-- [x] High-frequency account detection
-- [x] High-value transaction detection
-- [x] Geographic activity detection
-- [x] Stateful streaming
-- [x] Sliding-window processing
-- [x] Broadcast thresholds
-- [x] Malformed-record accumulator
-- [x] Cache/persist demonstration
-- [x] DataFrame aggregations
-- [x] Repartition and coalesce demonstration
-- [x] Final integrated monitoring pipeline
-- [x] Git repository setup
-- [x] GitHub repository publication
-- [x] Project documentation
+| Requirement | Status |
+|---|---|
+| Scala implementation | ✅ |
+| Spark RDD processing | ✅ |
+| Pair RDD | ✅ |
+| Stateful processing | ✅ |
+| Sliding window | ✅ |
+| Broadcast variable | ✅ |
+| Accumulator | ✅ |
+| Cache/persist | ✅ |
+| DataFrame aggregation | ✅ |
+| Narrow transformations | ✅ |
+| Wide transformations | ✅ |
+| DAG explanation | ✅ |
+| Stage explanation | ✅ |
+| Shuffle explanation | ✅ |
+| Partition management | ✅ |
+| Repartition/coalesce | ✅ |
+| Fault tolerance/lineage | ✅ |
+| YARN deployment concept | ✅ |
+| Packaged JAR | ✅ |
+| Spark-submit execution | ✅ |
+| Public dashboard | ✅ |
 
 ---
 
