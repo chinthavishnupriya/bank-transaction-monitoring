@@ -8,6 +8,8 @@ The Bank Transaction Monitoring Dashboard is deployed using GitHub Pages.
 
 👉 **[Open Live Dashboard](https://chinthavishnupriya.github.io/bank-transaction-monitoring/)**
 
+![Bank Transaction Monitoring Dashboard](docs/dashboard-preview.png)
+
 The dashboard displays:
 - Valid and malformed transaction counts
 - High-frequency account alerts
