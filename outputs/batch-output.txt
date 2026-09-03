@@ -1,0 +1,172 @@
+[info] running (fork) BatchProcessor 
+Picked up JAVA_TOOL_OPTIONS: --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+26/09/03 09:10:18 WARN Utils: Your hostname, vishnupriya resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/03 09:10:18 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/09/03 09:10:18 INFO SparkContext: Running Spark version 3.5.6
+26/09/03 09:10:18 INFO SparkContext: OS info Linux, 6.18.33.2-microsoft-standard-WSL2, amd64
+26/09/03 09:10:18 INFO SparkContext: Java version 17.0.20
+26/09/03 09:10:18 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/09/03 09:10:18 INFO ResourceUtils: ==============================================================
+26/09/03 09:10:18 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/09/03 09:10:18 INFO ResourceUtils: ==============================================================
+26/09/03 09:10:18 INFO SparkContext: Submitted application: Bank Transaction Monitoring
+26/09/03 09:10:18 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/09/03 09:10:18 INFO ResourceProfile: Limiting resource is cpu
+26/09/03 09:10:18 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/09/03 09:10:18 INFO SecurityManager: Changing view acls to: vishnupriya
+26/09/03 09:10:18 INFO SecurityManager: Changing modify acls to: vishnupriya
+26/09/03 09:10:18 INFO SecurityManager: Changing view acls groups to: 
+26/09/03 09:10:18 INFO SecurityManager: Changing modify acls groups to: 
+26/09/03 09:10:18 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: vishnupriya; groups with view permissions: EMPTY; users with modify permissions: vishnupriya; groups with modify permissions: EMPTY
+26/09/03 09:10:18 INFO Utils: Successfully started service 'sparkDriver' on port 44357.
+26/09/03 09:10:18 INFO SparkEnv: Registering MapOutputTracker
+26/09/03 09:10:18 INFO SparkEnv: Registering BlockManagerMaster
+26/09/03 09:10:18 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/09/03 09:10:18 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/09/03 09:10:18 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/09/03 09:10:18 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-5f4c2aeb-fe69-4e1b-be74-315af5635584
+26/09/03 09:10:18 INFO MemoryStore: MemoryStore started with capacity 987.6 MiB
+26/09/03 09:10:18 INFO SparkEnv: Registering OutputCommitCoordinator
+26/09/03 09:10:18 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+26/09/03 09:10:18 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/09/03 09:10:19 INFO Executor: Starting executor ID driver on host 10.255.255.254
+26/09/03 09:10:19 INFO Executor: OS info Linux, 6.18.33.2-microsoft-standard-WSL2, amd64
+26/09/03 09:10:19 INFO Executor: Java version 17.0.20
+26/09/03 09:10:19 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+26/09/03 09:10:19 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@142213d5 for default.
+26/09/03 09:10:19 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 33333.
+26/09/03 09:10:19 INFO NettyBlockTransferService: Server created on 10.255.255.254:33333
+26/09/03 09:10:19 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/09/03 09:10:19 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 10.255.255.254, 33333, None)
+26/09/03 09:10:19 INFO BlockManagerMasterEndpoint: Registering block manager 10.255.255.254:33333 with 987.6 MiB RAM, BlockManagerId(driver, 10.255.255.254, 33333, None)
+26/09/03 09:10:19 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 10.255.255.254, 33333, None)
+26/09/03 09:10:19 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 10.255.255.254, 33333, None)
+
+==========================================
+       BANK TRANSACTION MONITORING
+==========================================
+
+Total valid transactions: 20
+
+Malformed transaction count:
+------------------------------------------
+Malformed transactions: 0
+
+First 5 valid transactions:
+------------------------------------------
+BankTransaction(TXN001,ACC001,CUST001,DEPOSIT,50000.0,2026-09-03T09:00:00,Hyderabad)
+BankTransaction(TXN002,ACC001,CUST001,WITHDRAWAL,5000.0,2026-09-03T09:15:00,Hyderabad)
+BankTransaction(TXN003,ACC002,CUST002,TRANSFER,2500.0,2026-09-03T09:20:00,Chennai)
+BankTransaction(TXN004,ACC003,CUST003,WITHDRAWAL,15000.0,2026-09-03T09:25:00,Bangalore)
+BankTransaction(TXN005,ACC004,CUST004,TRANSFER,75000.0,2026-09-03T09:30:00,Mumbai)
+
+Broadcast monitoring thresholds:
+------------------------------------------
+Frequency threshold: 3
+Amount threshold: ₹50000.00
+Geographic threshold: 3
+
+Partition information:
+------------------------------------------
+Transactions RDD partitions: 2
+Account Pair RDD partitions: 2
+After reduceByKey partitions: 2
+
+Transaction count by account:
+------------------------------------------
+ACC007 -> 1
+ACC002 -> 3
+ACC001 -> 6
+ACC004 -> 2
+ACC010 -> 1
+ACC008 -> 1
+ACC006 -> 1
+ACC003 -> 3
+ACC009 -> 1
+ACC005 -> 1
+
+High transaction frequency accounts:
+------------------------------------------
+ALERT -> ACC001 has 6 transactions
+
+Number of high-frequency accounts: 1
+
+High amount transactions:
+------------------------------------------
+ALERT -> TXN014 | Account: ACC007 | Amount: ₹90000.00 | Type: WITHDRAWAL | Location: Delhi
+ALERT -> TXN005 | Account: ACC004 | Amount: ₹75000.00 | Type: TRANSFER | Location: Mumbai
+ALERT -> TXN015 | Account: ACC008 | Amount: ₹120000.00 | Type: TRANSFER | Location: Kolkata
+ALERT -> TXN009 | Account: ACC003 | Amount: ₹60000.00 | Type: TRANSFER | Location: Bangalore
+
+Number of high-amount transactions: 4
+
+Transaction count by location:
+------------------------------------------
+Chennai -> 3
+Delhi -> 2
+Hyderabad -> 7
+Pune -> 1
+Kolkata -> 1
+Bangalore -> 3
+Mumbai -> 3
+
+High-frequency geographic locations:
+------------------------------------------
+ALERT -> Hyderabad has 7 transactions
+
+Number of high-frequency locations: 1
+
+After repartition:
+------------------------------------------
+Partitions after repartition(4): 4
+
+After coalesce:
+------------------------------------------
+Partitions after coalesce(2): 2
+
+Transaction DataFrame:
+------------------------------------------
++-------------+---------+----------+---------------+-------+-------------------+---------+
+|transactionId|accountId|customerId|transactionType|amount |timestamp          |location |
++-------------+---------+----------+---------------+-------+-------------------+---------+
+|TXN001       |ACC001   |CUST001   |DEPOSIT        |50000.0|2026-09-03T09:00:00|Hyderabad|
+|TXN002       |ACC001   |CUST001   |WITHDRAWAL     |5000.0 |2026-09-03T09:15:00|Hyderabad|
+|TXN003       |ACC002   |CUST002   |TRANSFER       |2500.0 |2026-09-03T09:20:00|Chennai  |
+|TXN004       |ACC003   |CUST003   |WITHDRAWAL     |15000.0|2026-09-03T09:25:00|Bangalore|
+|TXN005       |ACC004   |CUST004   |TRANSFER       |75000.0|2026-09-03T09:30:00|Mumbai   |
++-------------+---------+----------+---------------+-------+-------------------+---------+
+only showing top 5 rows
+
+
+DataFrame schema:
+------------------------------------------
+root
+ |-- transactionId: string (nullable = true)
+ |-- accountId: string (nullable = true)
+ |-- customerId: string (nullable = true)
+ |-- transactionType: string (nullable = true)
+ |-- amount: double (nullable = false)
+ |-- timestamp: string (nullable = true)
+ |-- location: string (nullable = true)
+
+
+Account transaction statistics:
+------------------------------------------
++---------+----------------+-----------+------------------+-------------+
+|accountId|transactionCount|totalAmount|averageAmount     |maximumAmount|
++---------+----------------+-----------+------------------+-------------+
+|ACC001   |6               |65500.0    |10916.666666666666|50000.0      |
+|ACC002   |3               |10500.0    |3500.0            |4500.0       |
+|ACC003   |3               |80500.0    |26833.333333333332|60000.0      |
+|ACC004   |2               |85000.0    |42500.0           |75000.0      |
+|ACC005   |1               |10000.0    |10000.0           |10000.0      |
+|ACC006   |1               |8000.0     |8000.0            |8000.0       |
+|ACC007   |1               |90000.0    |90000.0           |90000.0      |
+|ACC008   |1               |120000.0   |120000.0          |120000.0     |
+|ACC009   |1               |7000.0     |7000.0            |7000.0       |
+|ACC010   |1               |25000.0    |25000.0           |25000.0      |
++---------+----------------+-----------+------------------+-------------+
+
+[success] elapsed time: 8 s
+[0J

@@ -1,0 +1,168 @@
+Picked up JAVA_TOOL_OPTIONS: --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+Picked up JAVA_TOOL_OPTIONS: --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+26/09/03 09:15:21 WARN Utils: Your hostname, vishnupriya resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/03 09:15:21 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/09/03 09:15:21 INFO SparkContext: Running Spark version 3.5.6
+26/09/03 09:15:21 INFO SparkContext: OS info Linux, 6.18.33.2-microsoft-standard-WSL2, amd64
+26/09/03 09:15:21 INFO SparkContext: Java version 17.0.20
+26/09/03 09:15:21 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/09/03 09:15:21 INFO ResourceUtils: ==============================================================
+26/09/03 09:15:21 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/09/03 09:15:21 INFO ResourceUtils: ==============================================================
+26/09/03 09:15:21 INFO SparkContext: Submitted application: Final Bank Transaction Monitoring
+26/09/03 09:15:21 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/09/03 09:15:21 INFO ResourceProfile: Limiting resource is cpu
+26/09/03 09:15:21 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/09/03 09:15:21 INFO SecurityManager: Changing view acls to: vishnupriya
+26/09/03 09:15:21 INFO SecurityManager: Changing modify acls to: vishnupriya
+26/09/03 09:15:21 INFO SecurityManager: Changing view acls groups to: 
+26/09/03 09:15:21 INFO SecurityManager: Changing modify acls groups to: 
+26/09/03 09:15:21 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: vishnupriya; groups with view permissions: EMPTY; users with modify permissions: vishnupriya; groups with modify permissions: EMPTY
+26/09/03 09:15:22 INFO Utils: Successfully started service 'sparkDriver' on port 38181.
+26/09/03 09:15:22 INFO SparkEnv: Registering MapOutputTracker
+26/09/03 09:15:22 INFO SparkEnv: Registering BlockManagerMaster
+26/09/03 09:15:22 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/09/03 09:15:22 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/09/03 09:15:22 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/09/03 09:15:22 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-7c50560e-7262-428f-8322-e25692772075
+26/09/03 09:15:22 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+26/09/03 09:15:22 INFO SparkEnv: Registering OutputCommitCoordinator
+26/09/03 09:15:22 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+26/09/03 09:15:22 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/09/03 09:15:22 INFO SparkContext: Added JAR file:/home/vishnupriya/bank-transaction-monitoring/bank-transaction-monitoring.jar at spark://10.255.255.254:38181/jars/bank-transaction-monitoring.jar with timestamp 1788426921524
+26/09/03 09:15:22 INFO Executor: Starting executor ID driver on host 10.255.255.254
+26/09/03 09:15:22 INFO Executor: OS info Linux, 6.18.33.2-microsoft-standard-WSL2, amd64
+26/09/03 09:15:22 INFO Executor: Java version 17.0.20
+26/09/03 09:15:22 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+26/09/03 09:15:22 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@6ca8fcf3 for default.
+26/09/03 09:15:22 INFO Executor: Fetching spark://10.255.255.254:38181/jars/bank-transaction-monitoring.jar with timestamp 1788426921524
+26/09/03 09:15:22 INFO TransportClientFactory: Successfully created connection to /10.255.255.254:38181 after 23 ms (0 ms spent in bootstraps)
+26/09/03 09:15:22 INFO Utils: Fetching spark://10.255.255.254:38181/jars/bank-transaction-monitoring.jar to /tmp/spark-52bbcdfb-4669-489e-b4d2-ad4f0bccdccb/userFiles-59ddbde7-e8da-468b-922d-ec8d49afea2e/fetchFileTemp3901064900950813970.tmp
+26/09/03 09:15:22 INFO Executor: Adding file:/tmp/spark-52bbcdfb-4669-489e-b4d2-ad4f0bccdccb/userFiles-59ddbde7-e8da-468b-922d-ec8d49afea2e/bank-transaction-monitoring.jar to class loader default
+26/09/03 09:15:22 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 32901.
+26/09/03 09:15:22 INFO NettyBlockTransferService: Server created on 10.255.255.254:32901
+26/09/03 09:15:22 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/09/03 09:15:22 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 10.255.255.254, 32901, None)
+26/09/03 09:15:22 INFO BlockManagerMasterEndpoint: Registering block manager 10.255.255.254:32901 with 434.4 MiB RAM, BlockManagerId(driver, 10.255.255.254, 32901, None)
+26/09/03 09:15:22 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 10.255.255.254, 32901, None)
+26/09/03 09:15:22 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 10.255.255.254, 32901, None)
+
+==================================================
+       FINAL BANK TRANSACTION MONITORING
+==================================================
+
+Monitoring thresholds:
+------------------------------------------
+Frequency: > 3
+Amount: > ₹50000.00
+Location: > 3
+
+Input summary:
+------------------------------------------
+Total valid transactions: 20
+Malformed transactions: 0
+
+==================================================
+       TRANSACTION FREQUENCY MONITORING
+==================================================
+ACC001 -> 6 transactions
+ACC002 -> 3 transactions
+ACC003 -> 3 transactions
+ACC004 -> 2 transactions
+ACC005 -> 1 transactions
+ACC006 -> 1 transactions
+ACC007 -> 1 transactions
+ACC008 -> 1 transactions
+ACC009 -> 1 transactions
+ACC010 -> 1 transactions
+
+High-frequency account alerts:
+------------------------------------------
+ALERT -> ACC001 has 6 transactions
+
+==================================================
+       HIGH AMOUNT TRANSACTION MONITORING
+==================================================
+ALERT -> TXN005 | Account: ACC004 | Amount: ₹75000.00 | Location: Mumbai
+ALERT -> TXN009 | Account: ACC003 | Amount: ₹60000.00 | Location: Bangalore
+ALERT -> TXN014 | Account: ACC007 | Amount: ₹90000.00 | Location: Delhi
+ALERT -> TXN015 | Account: ACC008 | Amount: ₹120000.00 | Location: Kolkata
+
+==================================================
+       GEOGRAPHIC TRANSACTION MONITORING
+==================================================
+Bangalore -> 3 transactions
+Chennai -> 3 transactions
+Delhi -> 2 transactions
+Hyderabad -> 7 transactions
+Kolkata -> 1 transactions
+Mumbai -> 3 transactions
+Pune -> 1 transactions
+
+High-frequency location alerts:
+------------------------------------------
+ALERT -> Hyderabad has 7 transactions
+
+==================================================
+       DATAFRAME ACCOUNT ANALYSIS
+==================================================
++---------+----------------+-----------+------------------+-------------+-------------+
+|accountId|transactionCount|totalAmount|averageAmount     |maximumAmount|minimumAmount|
++---------+----------------+-----------+------------------+-------------+-------------+
+|ACC001   |6               |65500.0    |10916.666666666666|50000.0      |2000.0       |
+|ACC002   |3               |10500.0    |3500.0            |4500.0       |2500.0       |
+|ACC003   |3               |80500.0    |26833.333333333332|60000.0      |5500.0       |
+|ACC004   |2               |85000.0    |42500.0           |75000.0      |10000.0      |
+|ACC005   |1               |10000.0    |10000.0           |10000.0      |10000.0      |
+|ACC006   |1               |8000.0     |8000.0            |8000.0       |8000.0       |
+|ACC007   |1               |90000.0    |90000.0           |90000.0      |90000.0      |
+|ACC008   |1               |120000.0   |120000.0          |120000.0     |120000.0     |
+|ACC009   |1               |7000.0     |7000.0            |7000.0       |7000.0       |
+|ACC010   |1               |25000.0    |25000.0           |25000.0      |25000.0      |
++---------+----------------+-----------+------------------+-------------+-------------+
+
+
+Transaction type statistics:
+------------------------------------------
++---------------+----------------+-----------+------------------+
+|transactionType|transactionCount|totalAmount|averageAmount     |
++---------------+----------------+-----------+------------------+
+|DEPOSIT        |3               |85000.0    |28333.333333333332|
+|TRANSFER       |10              |277000.0   |27700.0           |
+|WITHDRAWAL     |7               |139500.0   |19928.571428571428|
++---------------+----------------+-----------+------------------+
+
+
+Location statistics:
+------------------------------------------
++---------+----------------+-----------+
+|location |transactionCount|totalAmount|
++---------+----------------+-----------+
+|Bangalore|3               |80500.0    |
+|Chennai  |3               |10500.0    |
+|Delhi    |2               |100000.0   |
+|Hyderabad|7               |72500.0    |
+|Kolkata  |1               |120000.0   |
+|Mumbai   |3               |110000.0   |
+|Pune     |1               |8000.0     |
++---------+----------------+-----------+
+
+
+==================================================
+       PARTITION INFORMATION
+==================================================
+Original partitions: 2
+After repartition(4): 4
+After coalesce(2): 2
+
+==================================================
+       MONITORING SUMMARY
+==================================================
+Valid transactions: 20
+Malformed transactions: 0
+High-frequency accounts: 1
+High-amount transactions: 4
+High-frequency locations: 1
+
+Final monitoring pipeline completed.
+==================================================
